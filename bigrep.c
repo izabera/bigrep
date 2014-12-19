@@ -18,7 +18,8 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 
 /* the first ones aren't used for anything, added just for clarity */
 #define INITIAL_STATUS  31
@@ -28,15 +29,34 @@
 #define NOT_FOUND       1
 #define FOUND           0
 
-int main (int argc, char ** argv) {
-  FILE *filea, *fileb;
-  fpos_t positiona, positionb;
-
-  unsigned int i, ret = INITIAL_STATUS;
+bool substringfound (FILE *filea, FILE *fileb) {
 
   /* if a variable size buffer is used, the problem is O(n)
+   * otherwise it's between O(n) and O(n*n)
    * TODO: add an option for this */
-  char buffer[4096];
+#define BUFFER_SIZE 4096
+  unsigned char buffera[BUFFER_SIZE], bufferb[BUFFER_SIZE];
+
+  size_t size_filea, size_fileb;
+  while (true) {
+    size_filea = fread(buffera, sizeof(unsigned char), BUFFER_SIZE, filea);
+    size_fileb = fread(bufferb, sizeof(unsigned char), BUFFER_SIZE, fileb);
+
+    if (memcmp(buffera, bufferb, sizeof(buffera)) != 0) return false;
+    /* if we're at eof in filea, we won */
+    if (size_filea < BUFFER_SIZE) return true;
+    /* we're not at eof in filea, but we're at eof in fileb, we lost */
+    if (size_fileb < BUFFER_SIZE) return false;
+  }
+  /*return something_went_wrong;*/
+}
+
+int main (int argc, char ** argv) {
+  FILE *filea, *fileb;
+  int offset;        /* this is what we'll print */
+  bool found = false;
+
+  unsigned int i, ret = INITIAL_STATUS;
 
   /* human readable errors are printed to stderr
    * error numbers are written to stdout to provide and easy to parse interface
@@ -71,11 +91,34 @@ int main (int argc, char ** argv) {
       ret &= CANT_OPEN_FILEB;
     }
     else {
-      /*c = fgetc(file);*/
-      /*while (c != EOF) {*/
-        /*putc(c, stdout);*/
-        /*c = fgetc(file);*/
-      /*}*/
+
+      offset = 0;
+      found = false;
+      while (!found) {
+        rewind(filea);
+        fseek(fileb, offset, SEEK_SET);
+        if (feof(fileb)) break;
+        found = substringfound(filea, fileb);
+        offset++;
+        printf ("%d\n", offset);
+      }
+
+      if (!found) {
+#ifdef HUMAN_READABLE
+        fprintf(stderr, "File %s doesn't match\n", argv[i]);
+#else
+        puts("-1");
+#endif
+        ret &= NOT_FOUND;
+      }
+      else {
+#ifdef HUMAN_READABLE
+        printf("File %s matches in position %d\n", argv[i], offset);
+#else
+        printf("%d\n", offset);
+#endif
+        ret &= FOUND;
+      }
       fclose(fileb);
     }
   }

@@ -1,5 +1,5 @@
 all:
-	gcc -O3 -s -o bigrep bigrep.c
+	gcc -std=c99 -Wall -O3 -s -march=native -o bigrep bigrep.c
 
 human:
-	gcc -O3 -s -o bigrep bigrep.c
+	gcc -std=c99 -DHUMAN_READABLE -Wall -O3 -s -march=native -o bigrep bigrep.c
