@@ -1,0 +1,27 @@
+From 3f3e91124e56e51169896f54c50b6ba98e0a9c3c Mon Sep 17 00:00:00 2001
+From: "Davide \"FunkyAss\" Del Zompo" <davide.delzompo@gmail.com>
+Date: Sat, 20 Dec 2014 12:54:49 +0100
+Subject: [PATCH 1/2] fix printf conversion for size_t offset
+
+Signed-off-by: Davide "FunkyAss" Del Zompo <davide.delzompo@gmail.com>
+---
+ bigrep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bigrep.c b/bigrep.c
+index a3e6262..3761f7c 100644
+--- a/bigrep.c
++++ b/bigrep.c
+@@ -140,7 +140,7 @@ int main (int argc, char ** argv) {
+       }
+       else {
+ #ifdef HUMAN_READABLE
+-        printf("File %s matches in position %d\n", argv[i], offset);
++        printf("File %s matches in position %zu\n", argv[i], offset);
+ #else
+         printf("%d\n", offset);
+ #endif
+-- 
+2.2.1
+
+

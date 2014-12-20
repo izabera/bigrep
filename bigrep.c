@@ -140,7 +140,7 @@ int main (int argc, char ** argv) {
       }
       else {
 #ifdef HUMAN_READABLE
-        printf("File %s matches in position %d\n", argv[i], offset);
+        printf("File %s matches in position %zu\n", argv[i], offset);
 #else
         printf("%d\n", offset);
 #endif

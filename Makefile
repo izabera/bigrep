@@ -5,10 +5,10 @@ human:
 	gcc -std=c99 -DHUMAN_READABLE    -pedantic -Wall -Wextra -O2 -march=native -o bigrep bigrep.c
 
 debug:
-	gcc -std=c99 -DHUMAN_READABLE -g -pedantic -Wall -Wextra                   -o bigrep bigrep.c
+	gcc -std=c99 -DHUMAN_READABLE -g -pg -pedantic -Wall -Wextra                   -o bigrep bigrep.c
 
 debug-optimized:
-	gcc -std=c99 -DHUMAN_READABLE -g -pedantic -Wall -Wextra -O2 -march=native -o bigrep bigrep.c
+	gcc -std=c99 -DHUMAN_READABLE -g -pg -pedantic -Wall -Wextra -O2 -march=native -o bigrep bigrep.c
 
 clean:
 	rm -f bigrep
