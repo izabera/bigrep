@@ -42,7 +42,7 @@ bool substringfound (FILE *filea, FILE *fileb) {
     size_filea = fread(buffera, sizeof(unsigned char), BUFFER_SIZE, filea);
     size_fileb = fread(bufferb, sizeof(unsigned char), BUFFER_SIZE, fileb);
 
-    if (memcmp(buffera, bufferb, sizeof(buffera)) != 0) return false;
+    if (memcmp(buffera, bufferb, size_filea) != 0) return false;
     /* if we're at eof in filea, we won */
     if (size_filea < BUFFER_SIZE) return true;
     /* we're not at eof in filea, but we're at eof in fileb, we lost */
@@ -53,6 +53,7 @@ bool substringfound (FILE *filea, FILE *fileb) {
 
 int main (int argc, char ** argv) {
   FILE *filea, *fileb;
+  size_t /* size_filea, */ size_fileb;
   int offset;        /* this is what we'll print */
   bool found = false;
 
@@ -92,15 +93,14 @@ int main (int argc, char ** argv) {
     }
     else {
 
-      offset = 0;
       found = false;
-      while (!found) {
+      fseek(fileb, 0, SEEK_END);
+      size_fileb = ftell(fileb);
+      for (offset = 0; offset < size_fileb; offset++) {
         rewind(filea);
         fseek(fileb, offset, SEEK_SET);
-        if (feof(fileb)) break;
         found = substringfound(filea, fileb);
-        offset++;
-        printf ("%d\n", offset);
+        if (found) break;
       }
 
       if (!found) {
