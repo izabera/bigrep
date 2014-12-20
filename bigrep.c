@@ -53,8 +53,7 @@ bool substringfound (FILE *filea, FILE *fileb) {
 
 int main (int argc, char ** argv) {
   FILE *filea, *fileb;
-  size_t /* size_filea, */ size_fileb;
-  int offset;        /* this is what we'll print */
+  fpos_t advancement;
   bool found = false;
 
   unsigned int i, ret = INITIAL_STATUS;
@@ -94,13 +93,16 @@ int main (int argc, char ** argv) {
     else {
 
       found = false;
-      fseek(fileb, 0, SEEK_END);
-      size_fileb = ftell(fileb);
-      for (offset = 0; offset < size_fileb; offset++) {
+      fgetpos(fileb, &advancement);
+      while (!feof(fileb)) {
         rewind(filea);
-        fseek(fileb, offset, SEEK_SET);
         found = substringfound(filea, fileb);
+        fsetpos(fileb, &advancement);
+        fgetc(fileb);
+        /*fseek(fileb, 1, SEEK_CUR);*/
+        /* can't use fseek, it clears the eof */
         if (found) break;
+        fgetpos(fileb, &advancement);
       }
 
       if (!found) {
@@ -113,9 +115,9 @@ int main (int argc, char ** argv) {
       }
       else {
 #ifdef HUMAN_READABLE
-        printf("File %s matches in position %d\n", argv[i], offset);
+        printf("File %s matches in position %d\n", argv[i], (int) advancement.__pos);
 #else
-        printf("%d\n", offset);
+        printf("%d\n", (int) advancement.__pos);
 #endif
         ret &= FOUND;
       }

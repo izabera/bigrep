@@ -3,7 +3,7 @@ bigrep
 
 (binary grep)
 
-by izabera
+by izabera  
 ISC license
 
 Usage: `bigrep FILE FILE...`  
@@ -23,5 +23,5 @@ of the files you have to check.
 Compile
 -------
 
-Run `make` or `make human` if you want more readable error messages.
+Run `make`, or `make human` if you want more readable error messages.
 
