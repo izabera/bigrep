@@ -31,9 +31,7 @@
 
 bool substringfound (FILE *filea, FILE *fileb) {
 
-  /* if a variable size buffer is used, the problem is O(n)
-   * otherwise it's between O(n) and O(n*n)
-   * TODO: add an option for this */
+  /* variable buffer size doesn't seem to improve performance much */
 #define BUFFER_SIZE 4096
   unsigned char buffera[BUFFER_SIZE], bufferb[BUFFER_SIZE];
 
@@ -112,7 +110,7 @@ int main (int argc, char ** argv) {
       }
       else {
 #ifdef HUMAN_READABLE
-        printf("File %s matches in position %d\n", argv[i], offset);
+        printf("File %s matches in position %zu\n", argv[i], offset);
 #else
         printf("%d\n", offset);
 #endif

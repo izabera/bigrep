@@ -1,0 +1,31 @@
+From 5af68316ad2144fcb2c5c594614fad6b446165da Mon Sep 17 00:00:00 2001
+From: "Davide \"FunkyAss\" Del Zompo" <davide.delzompo@gmail.com>
+Date: Sat, 20 Dec 2014 12:56:26 +0100
+Subject: [PATCH 2/2] Makefile: Add profiling switches to debug builds
+
+Signed-off-by: Davide "FunkyAss" Del Zompo <davide.delzompo@gmail.com>
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 455f4ec..df8029e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -5,10 +5,10 @@ human:
+ 	gcc -std=c99 -DHUMAN_READABLE    -pedantic -Wall -Wextra -O2 -march=native -o bigrep bigrep.c
+ 
+ debug:
+-	gcc -std=c99 -DHUMAN_READABLE -g -pedantic -Wall -Wextra                   -o bigrep bigrep.c
++	gcc -std=c99 -DHUMAN_READABLE -g -pg -pedantic -Wall -Wextra                   -o bigrep bigrep.c
+ 
+ debug-optimized:
+-	gcc -std=c99 -DHUMAN_READABLE -g -pedantic -Wall -Wextra -O2 -march=native -o bigrep bigrep.c
++	gcc -std=c99 -DHUMAN_READABLE -g -pg -pedantic -Wall -Wextra -O2 -march=native -o bigrep bigrep.c
+ 
+ clean:
+ 	rm -f bigrep
+-- 
+2.2.1
+
+
