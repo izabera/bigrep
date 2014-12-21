@@ -54,7 +54,7 @@ int main (int argc, char ** argv) {
   size_t offset, size_fileb;
   bool found = false;
 
-  unsigned int i, ret = INITIAL_STATUS;
+  int i, ret = INITIAL_STATUS;
 
   /* human readable errors are printed to stderr
    * error numbers are written to stdout to provide and easy to parse interface
@@ -112,7 +112,7 @@ int main (int argc, char ** argv) {
 #ifdef HUMAN_READABLE
         printf("File %s matches in position %zu\n", argv[i], offset);
 #else
-        printf("%d\n", offset);
+        printf("%zu\n", offset);
 #endif
         ret &= FOUND;
       }
