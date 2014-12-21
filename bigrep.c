@@ -29,13 +29,15 @@
 #define NOT_FOUND       1
 #define FOUND           0
 
+/* variable buffer size doesn't seem to improve performance */
+#define BUFFER_SIZE 4096
+
+/* global declarations ftw */
+unsigned char *buffera, *bufferb;
+size_t size_filea, size_fileb;
+
 bool substringfound (FILE *filea, FILE *fileb) {
 
-  /* variable buffer size doesn't seem to improve performance much */
-#define BUFFER_SIZE 4096
-  unsigned char buffera[BUFFER_SIZE], bufferb[BUFFER_SIZE];
-
-  size_t size_filea, size_fileb;
   while (true) {
     size_filea = fread(buffera, sizeof(unsigned char), BUFFER_SIZE, filea);
     size_fileb = fread(bufferb, sizeof(unsigned char), BUFFER_SIZE, fileb);
@@ -49,12 +51,16 @@ bool substringfound (FILE *filea, FILE *fileb) {
   /*return something_went_wrong;*/
 }
 
+size_t minimaloffset (FILE *filea, FILE *fileb) {
+  memchr;
+}
+
 int main (int argc, char ** argv) {
   FILE *filea, *fileb;
-  size_t offset, size_fileb;
+  size_t offset, size_filea, size_fileb;
   bool found = false;
 
-  unsigned int i, ret = INITIAL_STATUS;
+  int i, ret = INITIAL_STATUS;
 
   /* human readable errors are printed to stderr
    * error numbers are written to stdout to provide and easy to parse interface
@@ -77,6 +83,11 @@ int main (int argc, char ** argv) {
 #endif
     return CANT_OPEN_FILEA;
   }
+  fseek(filea, 0, SEEK_END);
+  size_filea = ftell(filea);
+
+  buffera = (unsigned char*) malloc(BUFFER_SIZE * sizeof(unsigned char));
+  bufferb = (unsigned char*) malloc(BUFFER_SIZE * sizeof(unsigned char));
 
   for (i = 2; i < argc; i++) {
     fileb = fopen(argv[i], "rb");
@@ -93,11 +104,13 @@ int main (int argc, char ** argv) {
       found = false;
       fseek(fileb, 0, SEEK_END);
       size_fileb = ftell(fileb);
-      for (offset = 0; offset < size_fileb; offset++) {
-        rewind(filea);
-        fseek(fileb, offset, SEEK_SET);
-        found = substringfound(filea, fileb);
-        if (found) break;
+      if (size_filea <= size_fileb) {
+        for (offset = minimoffset(filea, fileb); offset <= size_fileb - size_filea; offset++) {
+          rewind(filea);
+          fseek(fileb, offset, SEEK_SET);
+          found = substringfound(filea, fileb);
+          if (found) break;
+        }
       }
 
       if (!found) {
@@ -112,7 +125,7 @@ int main (int argc, char ** argv) {
 #ifdef HUMAN_READABLE
         printf("File %s matches in position %zu\n", argv[i], offset);
 #else
-        printf("%d\n", offset);
+        printf("%zu\n", offset);
 #endif
         ret &= FOUND;
       }
@@ -120,6 +133,8 @@ int main (int argc, char ** argv) {
     }
   }
   fclose(filea);
+  free(buffera);
+  free(buffere);
   return ret;
 }
 
