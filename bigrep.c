@@ -17,6 +17,9 @@
  * of the files you have to check
  */
 
+#include <sys/stat.h>
+#include <sys/mman.h> 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -34,6 +37,7 @@
 
 /* global declarations ftw */
 unsigned char *buffera, *bufferb;
+unsigned char *chars_in_filea;
 size_t size_filea, size_fileb;
 
 bool substringfound (FILE *filea, FILE *fileb) {
@@ -51,7 +55,15 @@ bool substringfound (FILE *filea, FILE *fileb) {
   /*return something_went_wrong;*/
 }
 
-size_t minimaloffset (FILE *filea, FILE *fileb) {
+size_t nextoffset (FILE *filea, FILE *fileb) {
+  size_t i;
+  char c;
+  for (i=0; i< size_filea; i++) {
+    if ((c = fgetc(file)) != EOF) 
+    getc(filea);
+    if (
+    size_filea = fread(buffera, sizeof(unsigned char), BUFFER_SIZE, filea);
+    if (size_filea < BUFFER_SIZE) return true;
   memchr;
 }
 
@@ -74,20 +86,23 @@ int main (int argc, char ** argv) {
     return NOT_ENOUGH_ARGS;
   }
 
+  struct stat s;
+  int stat_filea = stat(argv[1], &s);
   filea = fopen(argv[1], "rb");
   if (!filea) {
 #ifdef HUMAN_READABLE
-    fprintf(stderr, "Can't open file: %s\n", argv[1]);
+    fprintf(stderr, "Can't open file %s : %s", argv[1], strerror (errno));
 #else
     puts("-7");
 #endif
     return CANT_OPEN_FILEA;
   }
-  fseek(filea, 0, SEEK_END);
-  size_filea = ftell(filea);
+  size_filea = s.st_size;
 
   buffera = (unsigned char*) malloc(BUFFER_SIZE * sizeof(unsigned char));
   bufferb = (unsigned char*) malloc(BUFFER_SIZE * sizeof(unsigned char));
+  chars_in_filea = (unsigned char*) malloc(256 * sizeof(unsigned char));
+  get_chars_in_filea(filea);
 
   for (i = 2; i < argc; i++) {
     fileb = fopen(argv[i], "rb");
